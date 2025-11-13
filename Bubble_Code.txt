@@ -24,7 +24,7 @@ think ---- General Const Variables ----
 &colour`unread #592=+xterm202
 
 
-
+&license #592=MIT License%r%rCopyright (c) 2025 Vincent Cross%r%rPermission is hereby granted, free of charge, to any person obtaining a copy%rof this software and associated documentation files (the "Software"), to deal%rin the Software without restriction, including without limitation the rights%rto use, copy, modify, merge, publish, distribute, sublicense, and/or sell%rcopies of the Software, and to permit persons to whom the Software is%rfurnished to do so, subject to the following conditions:%r%rThe above copyright notice and this permission notice shall be included in all%rcopies or substantial portions of the Software.%r%rTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR%rIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,%rFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE%rAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER%rLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,%rOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE%rSOFTWARE.
 
 think ---- Help Command: +bubble/help ----
 
@@ -477,5 +477,6 @@ think ---- Settings Command ----
 &cmd_settings`main #592=[pemit(%#,Longest: [u(cmd_settings`longest_group)]%rAppWidth: %q<app_width>%rLeftColumn: %q<left_column>%rRightColumn: %q<right_column>)][pemit(%#,[u(app_display,[align(-[sub(%q<app_width>,2)],-- [ansi(u(colour`primary),Settings)] --,,)]%r[align(%q<left_column> >%q<right_column>$,[u(cmd_settings`headers)],[u(cmd_settings`values)],,)])])]
 
 &cmd_settings`headers #592=[ansi(u(colour`secondary),-Bubble Modes)]%r%bRecall:%r%bNotification:%r[ansi(u(colour`secondary),-Group Notifications)]%r%bGlobal:%r[iter(u(user`%#`groups),%b%i0-[u(func`group_get_name,%i0)]:,|,%r)]
+
 
 &cmd_settings`values #592=%r[u(func`user_get_mode,%#,recall)]%b%r[u(func`user_get_mode,%#,notification)]%b%r%r[u(user`%#`notification)]%b%r[iter(u(user`%#`groups),[u(func`user_get_notification_setting,%i0,%#)]%b,|,%r)]
