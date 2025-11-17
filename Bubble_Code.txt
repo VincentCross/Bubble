@@ -361,8 +361,6 @@ think ---- Groups Info Command: +bubble & +bubble/groups ----
 
 &cmd_groups`setup #592=[setq(line_length,[sub(u(default_app_width),u(bubble_indent_len_left),u(bubble_indent_len_right),4)])][setq(unread_column_length,12)][setq(name_column_length,sub(%q<line_length>,%q<unread_column_length>))]
 
-&cmd_groups`list #592=[iter(u(user`%#`groups),[u(func`set_group_vars,%i0)][pemit(%#,[u(app_display`body,[u(cmd_groups`top_line)]%r[u(cmd_groups`top_space_line)]%r[u(cmd_groups`name_line)]%r[u(cmd_groups`admin_line)]%r[u(cmd_groups`members_line)]%r[u(cmd_groups`bottom_line)]%r%r)])][unsetq(groupnum)][unsetq(groupname)],|,)]%r%r
-
 &cmd_groups`list #592=[ifelse(u(user`%#`groups),iter(u(user`%#`groups),[u(func`set_group_vars,%i0)][pemit(%#,[u(app_display`body,[u(cmd_groups`top_line)]%r[u(cmd_groups`top_space_line)]%r[u(cmd_groups`name_line)]%r[u(cmd_groups`admin_line)]%r[u(cmd_groups`members_line)]%r[u(cmd_groups`bottom_line)]%r%r)])][unsetq(groupnum)][unsetq(groupname)],|,),pemit(%#,[u(app_display`body,align(-[sub(u(default_app_width),2)],You are not a member of any groups.))]))]%r%r
 
 
