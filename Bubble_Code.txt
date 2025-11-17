@@ -503,7 +503,7 @@ think ---- +bubble/delete <group>=<msg#>
 
 &cmd_msgdelete`main #592=[if(cand(u(func`group_exists,%q<groupnum>),u(func`group_authorized,%q<groupnum>),u(func`group_msg_exists,%q<groupnum>,%q<bubblenum>),u(func`group_msg_authorized,%q<groupnum>,%q<bubblenum>)),u(cmd_msgdelete`deletemsg))]
 
-&cmd_msgdelete`deletemsg #592=[wipe(me/group`%q<groupnum>`history`%q<bubblenum>)][u(func`msg,%#,Message number %q<bubblenum> in %q<groupnum>-%q<groupname> has been deleted.)]
+&cmd_msgdelete`deletemsg #592=[wipe(me/group`%q<groupnum>`history`%q<bubblenum>`name)][u(func`msg,%#,Message number %q<bubblenum> in %q<groupnum>-%q<groupname> has been deleted.)]
 
 
 
