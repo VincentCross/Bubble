@@ -34,22 +34,25 @@ think ---- Help Command: +bubble/help ----
 &cmd_bubble_help`file`03 #592=[ansi(+xterm123,+bubble <group>)] - Displays last [u(default_message_count_full)] full / [u(default_message_count_simple)] simple messages for the group.
 &cmd_bubble_help`file`04 #592=[ansi(+xterm123,+bubble <group>=<message text>)] - Send a message to the specified group.
 &cmd_bubble_help`file`05 #592=[ansi(+xterm123,+bubble/recall <group>=<#>)] - Recall # amount of latest messages from specified group.
-&cmd_bubble_help`file`06 #592=[ansi(+xterm123,+bubble/simple \[recall/notification\])] and [ansi(+xterm123,+bubble/full \[recall/notification\])] - Sets a display mode for the bubbles. Can be customised for each type (when receiving notifications or when recalling in the app)
-&cmd_bubble_help`file`07 #592=[ansi(+xterm123,+bubble/off)] and [ansi(+xterm123,+bubble/quiet)] and [ansi(+xterm123,+bubble/loud)] - Sets a global notification level for messages received. Resets all group-specific settings to the same level. (see below).
-&cmd_bubble_help`file`08 #592=[ansi(+xterm123,+bubble/off <group>)] and [ansi(+xterm123,+bubble/quiet <group>)] and [ansi(+xterm123,+bubble/loud <group>)] - Sets a notification level for messages received for a specific group. Takes priority over the global.
-&cmd_bubble_help`file`09 #592=[ansi(+xterm123,+bubble/settings)] - Displays information about your bubble mode / notification level settings.
-&cmd_bubble_help`file`10 #592=%r[ansi(+xterm190,---- Group Management ----)]%r
-&cmd_bubble_help`file`11 #592=[ansi(+xterm123,+bubble/creategroup <name>)] - Creates a new group with the specified name. You will be set as its admin.
-&cmd_bubble_help`file`12 #592=[ansi(+xterm123,+bubble/invites)] - Lists any current invites to groups you have.
-&cmd_bubble_help`file`13 #592=[ansi(+xterm123,+bubble/accept <group>)] - Accepts an invite into a group.
-&cmd_bubble_help`file`14 #592=[ansi(+xterm123,+bubble/leave <group>)] - Leaves the specified group.
-&cmd_bubble_help`file`15 #592=%r[ansi(+xterm189,---- Group Management : Group Admin ----)]%r
-&cmd_bubble_help`file`16 #592=[ansi(+xterm123,+bubble/invite <group>=<name>)] - Invites a player to the specified group.
-&cmd_bubble_help`file`17 #592=[ansi(+xterm123,+bubble/remove <group>=<member>)] - Removes specified member from the group.
-&cmd_bubble_help`file`18 #592=[ansi(+xterm123,+bubble/promote <group>=<member>)] - Promotes specified member to admin in the group.
-&cmd_bubble_help`file`19 #592=[ansi(+xterm123,+bubble/delgroup <group>)] - Completely deletes a group.
-&cmd_bubble_help`file`20 #592=%r[ansi(+xterm42,---- Group Management : Staff ----)]%r
-&cmd_bubble_help`file`21 #592=[ansi(+xterm123,+bubble/removeadmin <group>=<member>)] - Removes the player from list of admins in the specified group.
+&cmd_bubble_help`file`06 #592=[ansi(+xterm123,+bubble/edit <group>/<#>=<message text>)] - Replace the text of the specified message with new text.
+&cmd_bubble_help`file`07 #592=[ansi(+xterm123,+bubble/delete <group>=<#>)] - Delete the specified message.
+&cmd_bubble_help`file`08 #592=%r[ansi(+xterm159,---- Settings ----)]%r
+&cmd_bubble_help`file`09 #592=[ansi(+xterm123,+bubble/simple \[recall/notification\])] and [ansi(+xterm123,+bubble/full \[recall/notification\])] - Sets a display mode for the bubbles. Can be customised for each type (when receiving notifications or when recalling in the app)
+&cmd_bubble_help`file`10 #592=[ansi(+xterm123,+bubble/off)] and [ansi(+xterm123,+bubble/quiet)] and [ansi(+xterm123,+bubble/loud)] - Sets a global notification level for messages received. Resets all group-specific settings to the same level. (see below).
+&cmd_bubble_help`file`11 #592=[ansi(+xterm123,+bubble/off <group>)] and [ansi(+xterm123,+bubble/quiet <group>)] and [ansi(+xterm123,+bubble/loud <group>)] - Sets a notification level for messages received for a specific group. Takes priority over the global.
+&cmd_bubble_help`file`12 #592=[ansi(+xterm123,+bubble/settings)] - Displays information about your bubble mode / notification level settings.
+&cmd_bubble_help`file`13 #592=%r[ansi(+xterm190,---- Group Management ----)]%r
+&cmd_bubble_help`file`14 #592=[ansi(+xterm123,+bubble/creategroup <name>)] - Creates a new group with the specified name. You will be set as its admin.
+&cmd_bubble_help`file`15 #592=[ansi(+xterm123,+bubble/invites)] - Lists any current invites to groups you have.
+&cmd_bubble_help`file`16 #592=[ansi(+xterm123,+bubble/accept <group>)] - Accepts an invite into a group.
+&cmd_bubble_help`file`17 #592=[ansi(+xterm123,+bubble/leave <group>)] - Leaves the specified group.
+&cmd_bubble_help`file`18 #592=%r[ansi(+xterm189,---- Group Management : Group Admin ----)]%r
+&cmd_bubble_help`file`19 #592=[ansi(+xterm123,+bubble/invite <group>=<name>)] - Invites a player to the specified group.
+&cmd_bubble_help`file`20 #592=[ansi(+xterm123,+bubble/remove <group>=<member>)] - Removes specified member from the group.
+&cmd_bubble_help`file`21 #592=[ansi(+xterm123,+bubble/promote <group>=<member>)] - Promotes specified member to admin in the group.
+&cmd_bubble_help`file`22 #592=[ansi(+xterm123,+bubble/delgroup <group>)] - Completely deletes a group.
+&cmd_bubble_help`file`23 #592=%r[ansi(+xterm42,---- Group Management : Staff ----)]%r
+&cmd_bubble_help`file`24 #592=[ansi(+xterm123,+bubble/removeadmin <group>=<member>)] - Removes the player from list of admins in the specified group.
 
 
 
