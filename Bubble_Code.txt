@@ -5,7 +5,7 @@ think ---- General Const Variables ----
 &app_name #592=[ansi(u(colour`primary),B)][ansi(u(colour`secondary),u)][ansi(u(colour`primary),b)][ansi(u(colour`primary),b)][ansi(u(colour`secondary),l)][ansi(u(colour`primary),e)]
 &logo_left #592=[ansi(u(colour`primary),.)][ansi(u(colour`secondary),o)][ansi(u(colour`primary),O)]
 &logo_right #592=[ansi(u(colour`primary),O)][ansi(u(colour`secondary),o)][ansi(u(colour`primary),.)]
-&version #592=0.9
+&version #592=0.9a
 &default_app_width #592=80
 &max_app_width #592=80
 &min_text #592=37
@@ -64,16 +64,18 @@ think ---- App Display Template ----
 
 think ---- Bubble Setup Functions ----
 
-think --Setup Input: %0-groupnum, %1-message text, %2-sender name, %3-receiver dbref, %4-icsecs of message
+think --Setup Input: %0-groupnum, %1-message text, %2-sender name, %3-receiver dbref, %4-icsecs of message, %5-# of the message
 think --Vars: %q<sentto> is the groupnum-groupname and is only populated when this bubble is being sent for the first time.
 think --      %q<bubblenum> is the message number in the group's history and is only populated during a recall.
-&display_bubble`bubble_setup #592=[setq(groupnum,%0,text,%1,name,%2,recipient,%3)][setq(direction,[ifelse([match(%q<name>,accname(%q<recipient>),|)],right,left)])][setq(mode,u(func`user_get_mode,%q<recipient>,ifelse(%q<sentto>,notification,recall)))][setq(icdatetime,%4)][setq(text_length,strlen(%q<text>))][setq(name_length,strlen(%q<name>))][u(display_bubble`set_msg_column_length)][u(display_bubble`set_indent_length)][u(display_bubble`set_line_length)][u(display_bubble`set_isunread)]
+&display_bubble`bubble_setup #592=[setq(groupnum,%0,text,%1,name,%2,recipient,%3,msgnum,%5)][setq(direction,[ifelse([match(%q<name>,accname(%q<recipient>),|)],right,left)])][setq(mode,u(func`user_get_mode,%q<recipient>,ifelse(%q<sentto>,notification,recall)))][setq(icdatetime,%4)][setq(text_length,strlen(%q<text>))][setq(name_length,strlen(%q<name>))][setq(msgnum_length,strlen(%5))][u(display_bubble`set_msg_column_length)][u(display_bubble`set_indent_length)][u(display_bubble`set_line_length)][u(display_bubble`set_isunread)]
 
-&display_bubble`set_msg_column_length #592=[setq(column_length,ifelse(lt(%q<text_length>,u(min_text)),u(min_text),ifelse(gt(%q<text_length>,u(max_text)),u(max_text),%q<text_length>)))]
+&display_bubble`set_msg_column_length #592=[setq(column_length,bound(%q<text_length>,u(min_text),u(max_text)))]
 
 &display_bubble`set_indent_length #592=[setq(indent_length,[switch(%q<direction>,left,u(bubble_indent_len_left),right,[sub(u(default_app_width),%q<column_length>,u(message_indent_len),u(message_trail_len),u(bubble_indent_len_right),4)])])]
 
-&display_bubble`set_line_length #592=[setq(line_length,[add(u(message_indent_len),%q<column_length>,u(message_trail_len))])]
+&display_bubble`set_line_length #592=[setq(line_length,[add(u(message_indent_len),%q<column_length>,u(message_trail_len))])][setq(name_line_length,bound(add(strlen(u(logo_left)),add(%q<msgnum_length>,4),1,%q<name_length>,3,strlen(%b%q<icdatetime>%b)),u(min_text),u(max_text)))][if(gt(%q<name_line_length>,%q<line_length>),[setq(difference,sub(%q<name_line_length>,%q<line_length>))][setq(line_length,bound(%q<name_line_length>,%q<name_line_length>,u(max_text)))][setq(column_length,add(%q<column_length>,%q<difference>))]
+
+
 
 &display_bubble`set_isunread #592=[setq(isunread,[ifelse(cand(%q<bubblenum>,match(u(user`%q<recipient>`unread`%q<groupnum>`list),%q<bubblenum>,|)),[ansi(u(colour`unread),\(U\))],%b%b%b)])]
 
@@ -89,7 +91,7 @@ think ---- Bubble Display Functions ----
 
 &display_bubble`full`header_line #592=[align([add(%q<indent_length>,1)] %q<line_length>([u(colour`secondary)]),[repeat([u(bubble_indent_text)],[add(%q<indent_length>,1)])],[align(-%q<line_length>,[ifelse(%q<sentto>,/ [ansi(w,%q<sentto>)] \\,_)],_,)],,)]
 
-&display_bubble`full`person_date_line #592=[align(%q<indent_length> 1 [strlen(u(logo_left))] [sub(%q<line_length>,strlen(u(logo_left)),strlen(%b%q<icdatetime>%b),3)] 3 >[strlen(%b%q<icdatetime>%b)] 1,[repeat([u(bubble_indent_text)],%q<indent_length>)],[ansi(u(colour`secondary),/)],[u(logo_left)],%b%q<name>,%q<isunread>,%b%q<icdatetime>%b,[ansi(u(colour`secondary),\\)],,)]
+&display_bubble`full`person_date_line #592=[align(%q<indent_length> 1 [strlen(u(logo_left))] [add(%q<msgnum_length>,3)] [sub(%q<line_length>,strlen(u(logo_left)),strlen(%b%q<icdatetime>%b),add(%q<msgnum_length>,3),3)] 3 >[strlen(%b%q<icdatetime>%b)] 1,[repeat([u(bubble_indent_text)],%q<indent_length>)],[ansi(u(colour`secondary),/)],[u(logo_left)],%b\(%q<msgnum>\),%b%q<name>,%q<isunread>,%b%q<icdatetime>%b,[ansi(u(colour`secondary),\\)],,)]
 
 &display_bubble`full`message_lines #592=[align(%q<indent_length>. 1. [u(message_indent_len)] %q<column_length> [u(message_trail_len)] 1.,[repeat([u(bubble_indent_text)],%q<indent_length>)],[ansi(u(colour`secondary),|)],,%q<text>,,[ansi(u(colour`secondary),|)],,)]
 
@@ -144,8 +146,8 @@ think ---- Group Data Layout ----
 &group`1`members #592=#103
 &group`1`admin #592=#103
 &group`1`history #592=2
-&group`1`history`1`name #592=Kasumi Yoshizawa
-&group`1`history`1`icdatetime #592=Aug/09 Thu 11:15AM
+&group`1`history`1`name #592=Kasumi Yoshizawa 1234567
+&group`1`history`1`icdatetime #592=Aug/09 Thu
 &group`1`history`1`text #592=Test One
 &group`1`delcheck #592=0
 &group`1`invites #592=
@@ -215,6 +217,10 @@ think ---- Group Validation ----
 &func`group_isinvited_check #592=[match(u(group`%0`invites),%1,|)]
 &func`group_isnotoff #592=[ifelse(not(u(func`group_isnotoff_check,%0,%1)),u(func`msg,%#,Error - You have that group's notifications set to 'off'.),1)]
 &func`group_isnotoff_check #592=[not(match(u(func`user_get_notification_setting,%0,%1),off))]
+&func`group_msg_exists #592=[ifelse(not(u(func`group_msg_exists_check,%0,%1)),u(func`msg,%#,Error - That message number does not exist in the group.),1)]
+&func`group_msg_exists_check #592=[hasattr(me/group`%0`history`%1`name)]
+&func`group_msg_authorized #592=[ifelse(not(u(func`group_msg_authorized_check,%0,%1)),u(func`msg,%#,Error - You are not the sender of that message.),1)]
+&func`group_msg_authorized_check #592=[match(%~,u(group`%0`history`%1`name),|)]
 
 
 think ---- Commands ----
@@ -227,7 +233,7 @@ think ---- Message Creation Command: +bubble <group>=<message text> ----
 
 &cmd_bubble`main #592=[if(cand(u(func`group_exists,%q<groupnum>),u(func`group_authorized,%q<groupnum>),u(func`group_isnotoff,%q<groupnum>,%#)),[u(cmd_bubble`send)])]
 
-&cmd_bubble`send #592=[iter(u(group`%q<groupnum>`members),[u(display_bubble`bubble_setup,%q<groupnum>,%q<bubble_text>,%~,%i0,u(func`current_ic_datetime))][u(cmd_bubble`[u(func`user_get_notification_setting,%q<groupnum>,%i0)]_send,%i0)],|)][u(func`store)]
+&cmd_bubble`send #592=[iter(u(group`%q<groupnum>`members),[u(display_bubble`bubble_setup,%q<groupnum>,%q<bubble_text>,%~,%i0,u(func`current_ic_datetime),u(group`%q<groupnum>`history))][u(cmd_bubble`[u(func`user_get_notification_setting,%q<groupnum>,%i0)]_send,%i0)],|)][u(func`store)]
 
 &cmd_bubble`loud_send #592=[ifelse(gt(conn(%0),0),[pemit(%0,[u(display_bubble`main)])],[u(cmd_bubble`set_unread,%0)])]
 
@@ -245,13 +251,15 @@ think ---- Message Recall Command: +bubble/recall <group>=<amount to recall> ---
 
 &cmd_recall`main #592=[if(u(func`group_authorized,%q<groupnum>),[pemit(%#,[u(app_display`header)])][u(cmd_recall`pemit_body)][pemit(%#,[u(app_display`footer)])])]
 
-&cmd_recall`pemit_body #592=[ifelse(nattr(me/group`%q<groupnum>`history`*),[iter(u(cmd_recall`get_recall_list),[u(cmd_recall`message_setup,%i0)][pemit(%#,[u(app_display`body,u(display_bubble`main))])][u(cmd_recall`set_read)],,%r)],%r[align(-[sub(u(default_app_width),2)],No Messages To Recall%r%r)])]
+&cmd_recall`pemit_body #592=[ifelse(nattr(me/group`%q<groupnum>`history`*),[u(cmd_recall`get_recall_list)][iter(%q<recall_list>,[u(cmd_recall`message_setup,%i0)][pemit(%#,[u(app_display`body,u(display_bubble`main))])][u(cmd_recall`set_read)],,%r)],%r[align(-[sub(u(default_app_width),2)],No Messages To Recall%r%r)])]
 
-&cmd_recall`message_setup #592=[setq(bubblenum,%0)][u(display_bubble`bubble_setup,%q<groupnum>,u(group`%q<groupnum>`history`%q<bubblenum>`text),u(group`%q<groupnum>`history`%q<bubblenum>`name),%#,u(group`%q<groupnum>`history`%q<bubblenum>`icdatetime))]
+&cmd_recall`message_setup #592=[setq(bubblenum,%0)][u(display_bubble`bubble_setup,%q<groupnum>,u(group`%q<groupnum>`history`%q<bubblenum>`text),u(group`%q<groupnum>`history`%q<bubblenum>`name),%#,u(group`%q<groupnum>`history`%q<bubblenum>`icdatetime),%q<bubblenum>)]
 
 &cmd_recall`min_recall_num #592=[if(gt(%q<recall_num>,setr(msg_count,nattr(me/group`%q<groupnum>`history`*))),setq(recall_num,%q<msg_count>))]
 
-&cmd_recall`get_recall_list #592=[u(cmd_recall`min_recall_num)][if(%q<recall_num>,[lnum(sub(u(group`%q<groupnum>`history),%q<recall_num>),sub(u(group`%q<groupnum>`history),1))])]
+&cmd_recall`get_recall_list #592=[u(cmd_recall`min_recall_num)][setq(recall_list,if(%q<recall_num>,[lnum(sub(u(group`%q<groupnum>`history),%q<recall_num>),sub(u(group`%q<groupnum>`history),1))]))][u(cmd_recall`validate_list)]
+
+&cmd_recall`validate_list #592=[iter(%q<recall_list>,if(not(hasattr(me/group`%q<groupnum>`history`%i0`name)),setq(recall_list,remove(%q<recall_list>,%i0))))]
 
 &cmd_recall`set_read #592=[u(func`user_remove_unread,%#,%q<groupnum>,%q<bubblenum>)]
 
@@ -354,6 +362,8 @@ think ---- Groups Info Command: +bubble & +bubble/groups ----
 &cmd_groups`setup #592=[setq(line_length,[sub(u(default_app_width),u(bubble_indent_len_left),u(bubble_indent_len_right),4)])][setq(unread_column_length,12)][setq(name_column_length,sub(%q<line_length>,%q<unread_column_length>))]
 
 &cmd_groups`list #592=[iter(u(user`%#`groups),[u(func`set_group_vars,%i0)][pemit(%#,[u(app_display`body,[u(cmd_groups`top_line)]%r[u(cmd_groups`top_space_line)]%r[u(cmd_groups`name_line)]%r[u(cmd_groups`admin_line)]%r[u(cmd_groups`members_line)]%r[u(cmd_groups`bottom_line)]%r%r)])][unsetq(groupnum)][unsetq(groupname)],|,)]%r%r
+
+&cmd_groups`list #592=[ifelse(u(user`%#`groups),iter(u(user`%#`groups),[u(func`set_group_vars,%i0)][pemit(%#,[u(app_display`body,[u(cmd_groups`top_line)]%r[u(cmd_groups`top_space_line)]%r[u(cmd_groups`name_line)]%r[u(cmd_groups`admin_line)]%r[u(cmd_groups`members_line)]%r[u(cmd_groups`bottom_line)]%r%r)])][unsetq(groupnum)][unsetq(groupname)],|,),pemit(%#,[u(app_display`body,align(-[sub(u(default_app_width),2)],You are not a member of any groups.))]))]%r%r
 
 
 &cmd_groups`top_line #592=[ansi(u(colour`secondary),align(3 %q<line_length>,%b%b%b,_,_,))]
@@ -470,13 +480,39 @@ think ---- Settings Command ----
 
 &cmd_settings #592=$+bubble/settings: think [u(cmd_settings`setup)][u(cmd_settings`main)]
 
-&cmd_settings`setup #592=[setq(left_column,bound(add(2,u(cmd_settings`longest_group)),20))][setq(app_width,bound(add(%q<left_column>,8,2),34,78))][setq(right_column,sub(%q<app_width>,%q<left_column>,2))][pemit(%#,%q<app_width>-%q<left_column>-%q<right_column>)]
+&cmd_settings`setup #592=[setq(left_column,bound(add(2,u(cmd_settings`longest_group)),20))][setq(app_width,bound(add(%q<left_column>,8,2),34,78))][setq(right_column,sub(%q<app_width>,%q<left_column>,2))]
 
 &cmd_settings`longest_group #592=[last(sort(iter(u(user`%#`groups),strlen(%i0-u(func`group_get_name,%i0)),|,|),,|),|)]
 
-&cmd_settings`main #592=[pemit(%#,Longest: [u(cmd_settings`longest_group)]%rAppWidth: %q<app_width>%rLeftColumn: %q<left_column>%rRightColumn: %q<right_column>)][pemit(%#,[u(app_display,[align(-[sub(%q<app_width>,2)],-- [ansi(u(colour`primary),Settings)] --,,)]%r[align(%q<left_column> >%q<right_column>$,[u(cmd_settings`headers)],[u(cmd_settings`values)],,)])])]
+&cmd_settings`main #592=[pemit(%#,[u(app_display,[align(-[sub(%q<app_width>,2)],-- [ansi(u(colour`primary),Settings)] --,,)]%r[align(%q<left_column> >%q<right_column>$,[u(cmd_settings`headers)],[u(cmd_settings`values)],,)])])]
 
 &cmd_settings`headers #592=[ansi(u(colour`secondary),-Bubble Modes)]%r%bRecall:%r%bNotification:%r[ansi(u(colour`secondary),-Group Notifications)]%r%bGlobal:%r[iter(u(user`%#`groups),%b%i0-[u(func`group_get_name,%i0)]:,|,%r)]
 
 
 &cmd_settings`values #592=%r[u(func`user_get_mode,%#,recall)]%b%r[u(func`user_get_mode,%#,notification)]%b%r%r[u(user`%#`notification)]%b%r[iter(u(user`%#`groups),[u(func`user_get_notification_setting,%i0,%#)]%b,|,%r)]
+
+
+
+think ---- Message Editing Commands ----
+
+think ---- +bubble/delete <group>=<msg#>
+
+&cmd_msgdelete #592=$+bubble/delete *=*: think [u(cmd_msgdelete`setup,%0,%1)][u(cmd_msgdelete`main)]
+
+&cmd_msgdelete`setup #592=[u(func`set_group_vars,%0)][setq(bubblenum,%1)]
+
+&cmd_msgdelete`main #592=[if(cand(u(func`group_exists,%q<groupnum>),u(func`group_authorized,%q<groupnum>),u(func`group_msg_exists,%q<groupnum>,%q<bubblenum>),u(func`group_msg_authorized,%q<groupnum>,%q<bubblenum>)),u(cmd_msgdelete`deletemsg))]
+
+&cmd_msgdelete`deletemsg #592=[wipe(me/group`%q<groupnum>`history`%q<bubblenum>)][u(func`msg,%#,Message number %q<bubblenum> in %q<groupnum>-%q<groupname> has been deleted.)]
+
+
+
+think ---- +bubble/edit <group>/<msg#>=<text> ----
+
+&cmd_msgedit #592=$+bubble/edit */*=*: think [u(cmd_msgedit`setup,%0,%1,%2)][u(cmd_msgedit`main)]
+
+&cmd_msgedit`setup #592=[u(func`set_group_vars,%0)][setq(bubblenum,%1)][setq(new_text,%2)]
+
+&cmd_msgedit`main #592=[if(cand(u(func`group_exists,%q<groupnum>),u(func`group_authorized,%q<groupnum>),u(func`group_msg_exists,%q<groupnum>,%q<bubblenum>),u(func`group_msg_authorized,%q<groupnum>,%q<bubblenum>)),u(cmd_msgedit`editmsg))]
+
+&cmd_msgedit`editmsg #592=[attrib_set(me/group`%q<groupnum>`history`%q<bubblenum>`text,%q<new_text>)][u(func`msg,%#,Message number %q<bubblenum> in %q<groupnum>-%q<groupname> has been updated with new text: '%q<new_text>'.)]
